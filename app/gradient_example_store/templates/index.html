@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Micky's Magnificant Milkshakes</title>
+  <style>
+    body {
+      font-family: Helvetica;
+      padding: 2em;
+    }
+    form > .form-el input,
+    button {
+      font-size: 1em; 
+      padding: 0.2em;
+    }
+  </style>
+</head>
+
+<body>
+  <form>
+    <div class="form-el"><h2>
+      <div class="form-el-desc">Gradient Server Url:</div>
+      <input id="url" type="text" name="url">
+    </h2></div>
+    <div class="form-el"><h2>
+      <div class="form-el-desc">Gradient Vendor Id:</div>
+      <input id="vendor_id" type="text" name="vendor_id">
+    </h2></div>
+    <div class="form-el"><input id="submit" type="submit" value="Submit"></div>
+  </form>
+  <br>
+  <div><a href="/"><button>Restart</button></a></div>
+ 
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script>
+    $(document).ready(function(){
+      $("#submit").click(function(event){
+        
+        event.preventDefault();
+        var url = $("#url").val().replace(/\/$/, "");;
+        var vendor_id = $("#vendor_id").val();
+        
+        window.location.href = "/checkout?url="+url+"&vendor_id="+vendor_id;
+        
+      });  
+    });
+  </script>
+</body>
+</html>

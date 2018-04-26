@@ -6,34 +6,51 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Micky's Magnificant Milkshakes</title>
   <style>
+    body {
+      font-family: Helvetica;
+      padding: 2em;
+    }
+    form > .form-el {
+      padding-bottom: 1em;
+    }
+    button {
+      font-size: 1em; 
+      padding: 0.2em;
+    }
   </style>
 </head>
 
 <body>
-    <h1>Micky's Magnificant Milkshakes</h1>
-    <button id="checkout-with-gradient">Checkout with Gradient</button>
-    <!--<script src="https://devenv.gradient.care/assets/gradient.js"></script>-->
-    <script src="http://localhost:5001/assets/gradient.js"></script>
-    <script>
-        document.getElementById('checkout-with-gradient')
-                .addEventListener('click', function() {
-            gradientCheckout(2, [{
-                id: 0,
-                max_price: 5000,
-                min_price: 1000,
-                sku: 'A01',
-                name: 'Micky\'s Magnificant Chocolate Milkshake',
-                image_url: 'https://prettythings.soylent.com/assets/drink/20170627/0102a_gallery.jpg'
-            }, {
-                id: 1,
-                max_price: 6000,
-                min_price: 2000,
-                sku: 'A02',
-                name: 'Micky\'s Magnificant Chocolate Milkshake [Diet]',
-                image_url: 'https://prettythings.soylent.com/assets/drink/20170627/0103a_gallery.jpg'
-            // }], gradient_url='https://devenv.gradient.care');
-            }], gradient_url='http://localhost:5001');
-        });
-    </script>
+  
+  <h1><span style="color: blue">{{ vendor_name }}</span></h1>
+  <h2>URL: <span style="color: blue">{{ url }}</span></h2>
+  <h2>Vendor ID: <span style="color: blue">{{ vendor_id }}</span></h2>
+  <button id="checkout-with-gradient">Checkout with Gradient</button>
+  <br><br>
+  <div><a href="/"><button>Restart</button></a></div>
+  
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="{{ url }}/assets/gradient.js"></script>
+  <script>
+
+    $("#checkout-with-gradient").click(function() {
+      gradientCheckout('{{ vendor_id }}', [{
+          id: 0,
+          max_price: 5000,
+          min_price: 1000,
+          sku: 'A01',
+          name: 'Micky\'s Magnificant Chocolate Milkshake',
+          image_url: 'https://prettythings.soylent.com/assets/drink/20170627/0102a_gallery.jpg'
+      }, {
+          id: 1,
+          max_price: 6000,
+          min_price: 2000,
+          sku: 'A02',
+          name: 'Micky\'s Magnificant Chocolate Milkshake [Diet]',
+          image_url: 'https://prettythings.soylent.com/assets/drink/20170627/0103a_gallery.jpg'
+      }], "{{ url }}" );
+      
+    });
+  </script>
 </body>
 </html>
