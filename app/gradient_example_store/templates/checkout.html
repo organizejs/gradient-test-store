@@ -17,39 +17,131 @@
       font-size: 1em; 
       padding: 0.2em;
     }
+    #product-template > input {
+      margin-right: 0.5em;
+      margin-bottom: 0.5em;
+    }
+    #product-container {
+      margin-bottom: 1em;
+    }
+    .product {
+      border: 1px solid blue;
+      padding: 0.25em;
+      margin-bottom: 0.25em;
+    }
+    #checkout-with-gradient > button {
+      color: white;
+      background-color: blue;
+      border: 0px solid #fff;
+      padding: 0.5em;
+    }
+
   </style>
 </head>
 
 <body>
   
   <h1><span style="color: blue">{{ vendor_name }}</span></h1>
-  <h2>URL: <span style="color: blue">{{ url }}</span></h2>
+  <h2>Gradient Server URL: <span style="color: blue">{{ url }}</span></h2>
   <h2>Vendor ID: <span style="color: blue">{{ vendor_id }}</span></h2>
+  <!--
   <button id="checkout-with-gradient">Checkout with Gradient</button>
-  <br><br>
+  -->
+  <hr>
+  <h1>Products:</h1>
+  <div id="product-container"></div>
+  <div id="product-template">
+    <input id="product-template-name" type="text" placeholder="product name">
+    <input id="product-template-sku" type="text" placeholder="product SKU">
+    <input id="product-template-id" type="text" placeholder="product ID">
+    <br>
+    <input id="product-template-min-price" type="number" placeholder="min price">
+    <input id="product-template-max-price" type="number" placeholder="max price">
+    <input id="product-template-image-url" type="url" placeholder="image url">
+  </div>
+  <br>
+  <div id="product-add-btn"><button>Add Product</button></div>
+  <br>
+  <div id="product-add-error"></div>
+  <br>
+  <hr>
+  <br>
+  <div id="checkout-with-gradient"><button>Checkout with Gradient</button></div>
+  <br>
+  <hr>
+  <br>
   <div><a href="/"><button>Restart</button></a></div>
-  
+
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
   <script src="{{ url }}/assets/gradient.js"></script>
   <script>
 
+    function buildProductHtml(name, sku, id, minPrice, maxPrice, imageUrl) {
+      // returns the product html element
+      // this function requires all parameters to not be null
+      // if any parameter is null, return null
+
+      if ((name == null) || 
+          (sku == null) || 
+          (id == null) || 
+          (minPrice == null) || 
+          (maxPrice == null) || 
+          (imageUrl == null)) {
+        return null;
+      } else {
+        return `<div class='product'>
+                <span class='name'>${name}</span> | 
+                <span class='sku'>${sku}</span> | 
+                <span class='id'>${id}</span> | 
+                <span class='min-price'>${minPrice}</span> | 
+                <span class='max-price'>${maxPrice}</span> | 
+                <span class='image-url'>${imageUrl}</span>
+                </div>`;
+      }
+    };
+
+    $("#product-add-btn > button").click(function() {
+      var name = $("#product-template-name").val();
+      var sku = $("#product-template-sku").val();
+      var id = $("#product-template-id").val();
+      var minPrice = $("#product-template-min-price").val();
+      var maxPrice = $("#product-template-max-price").val();
+      var imageUrl = $("#product-template-image-url").val();
+
+      html = buildProductHtml(name, sku, id, minPrice, maxPrice, imageUrl)
+      if (html == null) {
+        // display error 
+        $("#product-add-error").html("<div style='color:red'>product information is incomplete</div>");
+      } else {
+        // display success
+        $("#product-add-error").html("<div style='color:green'>product successfully added</div>");
+        // add new product
+        $("#product-container").append(html);
+        // clear product input template
+        $("#product-template > input").each(function(i) {
+          $(this).val('');
+        });
+      }
+    });
+
     $("#checkout-with-gradient").click(function() {
-      gradientCheckout('{{ vendor_id }}', [{
-          id: 0,
-          max_price: 5000,
-          min_price: 1000,
-          sku: 'A01',
-          name: 'Micky\'s Magnificant Chocolate Milkshake',
-          image_url: 'https://prettythings.soylent.com/assets/drink/20170627/0102a_gallery.jpg'
-      }, {
-          id: 1,
-          max_price: 6000,
-          min_price: 2000,
-          sku: 'A02',
-          name: 'Micky\'s Magnificant Chocolate Milkshake [Diet]',
-          image_url: 'https://prettythings.soylent.com/assets/drink/20170627/0103a_gallery.jpg'
-      }], "{{ url }}" );
-      
+      if ($(".product").length) {
+        productList = [];
+        $(".product").each(function() {
+          productList.push({
+            id: $(this).find(".name").html(),
+            max_price: $(this).find(".max-price").html(),
+            min_price: $(this).find(".min-price").html(),
+            sku: $(this).find(".sku").html(),
+            name: $(this).find(".name").html(),
+            image_url: $(this).find(".image-url").html()
+          });
+        });
+
+        gradientCheckout('{{ vendor_id }}', productList, "{{ url }}" );
+      } else {
+        // you cannot submit without any products
+      }
     });
   </script>
 </body>
